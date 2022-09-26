@@ -120,12 +120,14 @@ class SignInProvider extends ChangeNotifier {
     final LoginResult result = await facebookAuth.login();
     // getting the profile
     var fbToken = result.accessToken!.token;
-    final graphResponse = await http.get(Uri.parse('https://graph.facebook.com/v2.12/me?fields=name,picture.width(800).height(800),first_name,last_name,email&access_token=$fbToken'));
+    final graphResponse = await http.get(Uri.parse(
+        'https://graph.facebook.com/v2.12/me?fields=name,picture.width(800).height(800),first_name,last_name,email&access_token=$fbToken'));
     final profile = jsonDecode(graphResponse.body);
 
-    if(result.status == LoginStatus.success){
+    if (result.status == LoginStatus.success) {
       try {
-        final OAuthCredential credential = FacebookAuthProvider.credential(fbToken);
+        final OAuthCredential credential =
+            FacebookAuthProvider.credential(fbToken);
         await firebaseAuth.signInWithCredential(credential);
 
         //saving the value
@@ -136,19 +138,18 @@ class SignInProvider extends ChangeNotifier {
         _uid = profile['id'];
         _hasError = false;
         notifyListeners();
-
-      }on FirebaseAuthException catch (e) {
+      } on FirebaseAuthException catch (e) {
         switch (e.code) {
           case 'account-exists-with-different-credential':
             _errorCode =
-            "You already have account with us, Use correct provider.";
+                "You already have account with us, Use correct provider.";
             _hasError = true;
             notifyListeners();
             break;
 
           case 'null':
             _errorCode =
-            "Some unexpected error encountered while trying the sign in.";
+                "Some unexpected error encountered while trying the sign in.";
             _hasError = true;
             notifyListeners();
             break;
@@ -159,14 +160,11 @@ class SignInProvider extends ChangeNotifier {
             notifyListeners();
         }
       }
-    }else {
+    } else {
       _hasError = true;
       notifyListeners();
     }
-
-  
   }
-
 
   //GET DATA FROM CLOUDFIRESTORE
   Future getUserDataFromFireStore(uid) async {

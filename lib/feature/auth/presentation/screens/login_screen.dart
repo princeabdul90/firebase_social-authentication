@@ -3,16 +3,18 @@
 * Date: 21/09/2022
 */
 
+import 'package:authentication/constants.dart';
 import 'package:authentication/feature/auth/presentation/provider/internet_provider.dart';
 import 'package:authentication/feature/auth/presentation/provider/sign_in_provider.dart';
 import 'package:authentication/feature/auth/presentation/screens/home_page.dart';
-import 'package:authentication/utils/config.dart';
 import 'package:authentication/utils/next_screen.dart';
 import 'package:authentication/utils/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
+
+import '../provider/firebase_repository_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -28,9 +30,10 @@ class _LoginScreenState extends State<LoginScreen> {
   final RoundedLoadingButtonController facebookController =
       RoundedLoadingButtonController();
 
-  // google
+  // google sign-in
   Future handleGoogleSignIn() async {
-    final sp = context.read<SignInProvider>();
+    //final sp = context.read<SignInProvider>();
+    final sp = context.read<FirebaseRepositoryProvider>();
     final ip = context.read<InternetProvider>();
 
     await ip.checkInternetConnection();
@@ -67,9 +70,10 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  // facebook
+  // facebook sign-in
   Future handleFacebookSignIn() async {
-    final sp = context.read<SignInProvider>();
+
+    final sp = context.read<FirebaseRepositoryProvider>();
     final ip = context.read<InternetProvider>();
 
     await ip.checkInternetConnection();
@@ -133,7 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Image(
-                      image: AssetImage(Config.loginIcon),
+                      image: AssetImage(AssetsConstant.loginIcon),
                       height: 80,
                       width: 80,
                       fit: BoxFit.contain,
