@@ -8,11 +8,12 @@ abstract class AuthRepository {
   Future signInWithGoogle();
   Future signInWithFacebook();
   Future<bool> checkUserExist();
-  Future userSignOut();
 
+  Future createNewUser();
+  Future saveDataToFirestore();
   Future getCurrentUserDataFromFireStore();
   Future getUserDataFromFireStore(uid);
-  Future saveDataToFirestore();
-  Future createNewUser();
+
+  Future userSignOut();
 
 }

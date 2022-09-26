@@ -5,11 +5,11 @@
 
 import 'dart:async';
 
-import 'package:authentication/feature/auth/presentation/provider/firebase_repository_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:authentication/constants.dart';
 
+import 'package:authentication/feature/auth/presentation/provider/firebase_repository_provider.dart';
 import 'package:authentication/feature/auth/presentation/screens/home_page.dart';
 import 'package:authentication/feature/auth/presentation/screens/login_screen.dart';
 import '../../../../utils/next_screen.dart';
