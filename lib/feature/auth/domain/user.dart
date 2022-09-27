@@ -3,7 +3,7 @@
 * Date: 25/09/2022
 */
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:equatable/equatable.dart';
 
 class UserModel extends Equatable {

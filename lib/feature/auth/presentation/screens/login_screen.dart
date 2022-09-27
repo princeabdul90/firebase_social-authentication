@@ -3,17 +3,17 @@
 * Date: 21/09/2022
 */
 
-import 'package:authentication/constants.dart';
-import 'package:authentication/feature/auth/presentation/provider/internet_provider.dart';
-import 'package:authentication/feature/auth/presentation/provider/sign_in_provider.dart';
-import 'package:authentication/feature/auth/presentation/screens/home_page.dart';
-import 'package:authentication/utils/next_screen.dart';
-import 'package:authentication/utils/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
+import 'package:authentication/constants.dart';
+import 'package:authentication/feature/auth/presentation/provider/internet_provider.dart';
+import 'package:authentication/feature/auth/presentation/screens/home_page.dart';
+import 'package:authentication/feature/auth/presentation/screens/phone_auth_screen.dart';
+import 'package:authentication/utils/next_screen.dart';
+import 'package:authentication/utils/snackbar.dart';
 import '../provider/firebase_repository_provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -28,6 +28,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final RoundedLoadingButtonController googleController =
       RoundedLoadingButtonController();
   final RoundedLoadingButtonController facebookController =
+      RoundedLoadingButtonController();
+  final RoundedLoadingButtonController phoneController =
       RoundedLoadingButtonController();
 
   // google sign-in
@@ -51,10 +53,12 @@ class _LoginScreenState extends State<LoginScreen> {
           sp.checkUserExist().then((value) async {
             if (value == true) {
               // user exist
-              await sp.getUserDataFromFireStore(sp.uid).then((value) => sp.saveDataToSharedPreference().then((value) => sp.setSignIn().then((value) {
-                googleController.success();
-                handleAfterSignIn();
-              })));
+              await sp.getUserDataFromFireStore(sp.uid).then((value) => sp
+                  .saveDataToSharedPreference()
+                  .then((value) => sp.setSignIn().then((value) {
+                        googleController.success();
+                        handleAfterSignIn();
+                      })));
             } else {
               // user does not exist
               sp.saveDataToFirestore().then((value) => sp
@@ -72,7 +76,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // facebook sign-in
   Future handleFacebookSignIn() async {
-
     final sp = context.read<FirebaseRepositoryProvider>();
     final ip = context.read<InternetProvider>();
 
@@ -91,18 +94,20 @@ class _LoginScreenState extends State<LoginScreen> {
           sp.checkUserExist().then((value) async {
             if (value == true) {
               // user exist
-              await sp.getUserDataFromFireStore(sp.uid).then((value) => sp.saveDataToSharedPreference().then((value) => sp.setSignIn().then((value) {
-                facebookController.success();
-                handleAfterSignIn();
-              })));
+              await sp.getUserDataFromFireStore(sp.uid).then((value) => sp
+                  .saveDataToSharedPreference()
+                  .then((value) => sp.setSignIn().then((value) {
+                        facebookController.success();
+                        handleAfterSignIn();
+                      })));
             } else {
               // user does not exist
               sp.saveDataToFirestore().then((value) => sp
                   .saveDataToSharedPreference()
                   .then((value) => sp.setSignIn().then((value) {
-                facebookController.success();
-                handleAfterSignIn();
-              })));
+                        facebookController.success();
+                        handleAfterSignIn();
+                      })));
             }
           });
         }
@@ -110,14 +115,17 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  // facebook sign-in
+  void handlePhoneSignIn()  {
+     phoneController.reset();
+  }
+
   // Handle after sign-in
   handleAfterSignIn() async {
     Future.delayed(const Duration(milliseconds: 1000)).then((value) {
-    nextScreen(context, const HomePage());
+      nextScreen(context, const HomePage());
     });
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -210,6 +218,36 @@ class _LoginScreenState extends State<LoginScreen> {
                         SizedBox(width: 15),
                         Text(
                           'Sign in with Facebook',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500),
+                        )
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  RoundedLoadingButton(
+                    width: MediaQuery.of(context).size.width * 0.80,
+                    controller: phoneController,
+                    onPressed: () {
+                      handlePhoneSignIn();
+                      nextScreenReplace(context, const PhoneAuthScreen());
+                    },
+                    color: Colors.blueGrey,
+                    successColor: Colors.blueGrey,
+                    elevation: 0.0,
+                    borderRadius: 25,
+                    child: Wrap(
+                      children: const [
+                        Icon(
+                          FontAwesomeIcons.phone,
+                          size: 20,
+                          color: Colors.white,
+                        ),
+                        SizedBox(width: 15),
+                        Text(
+                          'Sign in with Phone',
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 15,
