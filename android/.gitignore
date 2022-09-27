@@ -11,3 +11,8 @@ GeneratedPluginRegistrant.java
 key.properties
 **/*.keystore
 **/*.jks
+
+# project config file related
+.env
+/app/google-services.json
+/app/src/main/res/values/string.xml
