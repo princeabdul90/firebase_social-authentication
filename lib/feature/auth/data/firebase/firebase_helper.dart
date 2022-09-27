@@ -44,10 +44,12 @@ class FirebaseHelper {
   String? _imageUrl;
   String? get imageUrl => _imageUrl;
 
-// get facebook profile url
+// get facebook profile url - facebook Graph API
   String getFbProfile(token) {
     return 'https://graph.facebook.com/v2.12/me?fields=name,picture.width(800).height(800),first_name,last_name,email&access_token=$token';
   }
+
+
 
   Future<String> getCurrentUid() async => firebaseAuth.currentUser!.uid;
 
@@ -144,6 +146,51 @@ class FirebaseHelper {
     }
   }
 
+
+  String? _verificationId;
+  String? get verificationId => _verificationId;
+
+  Future signInWithNumber(phoneNumber, showDialog) async {
+    firebaseAuth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        verificationCompleted: (AuthCredential credential) async {
+          await firebaseAuth.signInWithCredential(credential);
+        },
+        verificationFailed: (FirebaseAuthException e) {
+          if (e.code == 'invalid-phone-number') {
+            _errorCode = 'The provided phone number is not valid.';
+          }
+          _errorCode = e.toString();
+        },
+        codeSent: (String verificationId, int? forcedResendingToken) {
+
+          _verificationId = verificationId; // To make verificationId available for other methods that needs it. (E.g  when Creating a PhoneAuthCredential with the code)
+          showDialog; // This display dialog on the screen for the user to enter the OTP code received.
+          },
+        codeAutoRetrievalTimeout: (String verification) {}
+    );
+  }
+
+  String phoneImage = 'https://lh3.googleusercontent.com/a-/ACNPEu-VWzZ8RG3Jd9_j4LYNebZpWPm1rF0cugyUkdKwrw=s96-c';
+
+  // Create a PhoneAuthCredential with the code
+  Future saveMobileUser(verificationId, otp, name, email) async {
+    AuthCredential authCredential =
+    PhoneAuthProvider.credential(
+        verificationId: verificationId, smsCode: otp);
+    User user = (await firebaseAuth
+        .signInWithCredential(authCredential))
+        .user!;
+
+    // saving all the values
+    _name = name;
+    _email = email;
+    _imageUrl = phoneImage;
+    _uid = user.phoneNumber;
+    _provider = "PHONE";
+  }
+
+ // check if user exist or not in firestore - For Testing Only.
   Future<bool> checkUserExist() async {
     final uid = await getCurrentUid();
 

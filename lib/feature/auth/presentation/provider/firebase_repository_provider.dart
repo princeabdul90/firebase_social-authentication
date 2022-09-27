@@ -3,9 +3,11 @@
 * Date: 25/09/2022
 */
 
+
+
 import 'package:authentication/feature/auth/data/auth_repository.dart';
 import 'package:authentication/feature/auth/data/firebase/firebase_helper.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FirebaseRepositoryProvider extends AuthRepository with ChangeNotifier {
@@ -102,11 +104,6 @@ class FirebaseRepositoryProvider extends AuthRepository with ChangeNotifier {
     return result;
   }
 
-  @override
-  Future createNewUser() {
-    // TODO: implement createNewUser
-    throw UnimplementedError();
-  }
 
 
   //SAVE TO SHARED PREFERENCES
@@ -137,7 +134,56 @@ class FirebaseRepositoryProvider extends AuthRepository with ChangeNotifier {
   }
 
 
+  @override
+  Future signInWithPhone(mobile, context, controller, onPressed) async  {
+
+   await firebaseHelper.signInWithNumber(mobile,
+       showDialog(
+         context: context,
+         builder: (context) {
+           return AlertDialog (
+             title: const Text("Enter OTP"),
+             content: Column(
+               mainAxisSize: MainAxisSize.min,
+               children: [
+                 TextField(
+                   controller: controller,
+                   decoration: InputDecoration(
+                     prefixIcon: const Icon(Icons.security_outlined),
+                     errorBorder: OutlineInputBorder(
+                       borderRadius: BorderRadius.circular(8),
+                       borderSide: const BorderSide(color: Colors.red),
+                     ),
+                     focusedBorder: OutlineInputBorder(
+                       borderRadius: BorderRadius.circular(8),
+                       borderSide: const BorderSide(color: Colors.grey),
+                     ),
+                     enabledBorder: OutlineInputBorder(
+                       borderRadius: BorderRadius.circular(8),
+                       borderSide: const BorderSide(color: Colors.grey),
+                     ),
+                   ),
+                 ),
+
+                 const SizedBox(height: 10),
+
+                 ElevatedButton(
+                   onPressed: onPressed,
+                   style: ElevatedButton.styleFrom(primary: Colors.blue),
+                   child: const Text('Confirm'),
+                 ),
+               ],
+             ),
+           );
+         },
+       )
+   );
+  }
 
 
+  Future saveMobileUser(otp, name, email) async {
+    await firebaseHelper.saveMobileUser(firebaseHelper.verificationId, otp, name, email);
+   notifyListeners();
+  }
 
 }
