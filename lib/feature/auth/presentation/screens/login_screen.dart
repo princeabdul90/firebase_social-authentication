@@ -34,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // google sign-in
   Future handleGoogleSignIn() async {
-    //final sp = context.read<SignInProvider>();
+
     final sp = context.read<FirebaseRepositoryProvider>();
     final ip = context.read<InternetProvider>();
 
