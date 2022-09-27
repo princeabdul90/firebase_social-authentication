@@ -12,7 +12,3 @@ key.properties
 **/*.keystore
 **/*.jks
 
-# project config file related
-.env
-android/app/google-services.json
-android/app/src/main/res/values/string.xml

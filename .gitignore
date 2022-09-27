@@ -45,3 +45,8 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# project config file related
+.env
+android/app/google-services.json
+android/app/src/main/res/values/string.xml
